@@ -42,6 +42,7 @@
 
 #include <iostream>   // For screen printing (std::cout) and keyboard input (std::cin)
 #include <string>     // For handling words, letters, and sentences (std::string)
+#include <sstream>    // For string streams (simulating and parsing text inputs)
 #include <vector>     // For expandable lists of items (std::vector)
 #include <array>      // For fixed-size lists of items (std::array)
 #include <memory>     // For modern smart pointers (automatic cleanup robots!)
@@ -219,7 +220,83 @@ void demonstrateDataTypes() {
 }
 
 // =========================================================================================
-// SECTION 5: OPERATORS (DOING MATH, LOGIC, AND COMPARISONS)
+// SECTION 5: CONSOLE INPUT AND OUTPUT (std::cout, std::cin, std::getline, std::endl)
+// =========================================================================================
+// WHAT IS IT CALLED?
+// Standard I/O Streams (std::cout, std::cin), Stream Operators (<<, >>), and std::getline()
+//
+// WHAT DOES IT DO?
+// - std::cout (Character Output): Sends text, numbers, and variables to the screen/terminal.
+// - << (Stream Insertion Operator): Pushes data OUT to the stream.
+// - std::cin (Character Input): Reads data typed by the user from the keyboard.
+// - >> (Stream Extraction Operator): Pulls data IN from the keyboard into a variable.
+//   (Stops at spaces, tabs, or newlines!)
+// - std::getline(std::cin, str): Reads a full line of text, INCLUDING spaces, until Enter.
+// - std::cin.ignore(): Cleans up leftover Enter keys (\n) lingering in the keyboard buffer.
+// - \n vs std::endl: '\n' is a fast newline; std::endl adds a newline AND forces the screen
+//   to flush immediately. '\n' is preferred for performance!
+//
+// 8-YEAR-OLD EXPLANATION:
+// - std::cout is a GIANT MEGAPHONE! You shout words into it (cout << "Hello!"), and it broadcasts
+//   them onto the TV screen for everyone to see!
+// - std::cin is your BIG LISTENING EARS! It waits patiently until someone whispers a secret number
+//   or word into your ear and puts it directly into your pocket (cin >> secretWord)!
+// - The arrows show the direction:
+//     cout << "Hi";   (Arrows point OUT toward the megaphone!)
+//     cin >> number;  (Arrows point IN toward your pocket!)
+// - std::cin >> is like eating one bite at a time (stops when it sees a space).
+// - std::getline is like slurping an ENTIRE long spaghetti noodle in one go!
+// =========================================================================================
+
+void demonstrateConsoleIO() {
+    std::cout << "\n--- DEMO 2: CONSOLE INPUT & OUTPUT (cout, cin, getline) ---\n";
+
+    // 1. Printing with std::cout and <<
+    int score = 100;
+    std::string playerName = "Alex";
+    std::cout << "std::cout: Player " << playerName << " scored " << score << " points!\n";
+
+    // 2. The difference between \n and std::endl
+    std::cout << "Fast newline using \\n" << "\n";
+    std::cout << "Flushed newline using std::endl" << std::endl;
+
+    // -------------------------------------------------------------------------------------
+    // HOW YOU USE KEYBOARD INPUT (std::cin) IN A REAL INTERACTIVE APP:
+    // -------------------------------------------------------------------------------------
+    // In a live app, you would write:
+    //
+    //    int userAge;
+    //    std::cout << "Enter your age: ";
+    //    std::cin >> userAge;               // Reads one number from keyboard
+    //
+    //    std::string fullName;
+    //    std::cout << "Enter your full name: ";
+    //    std::cin.ignore();                  // Clears leftover Enter key from the buffer!
+    //    std::getline(std::cin, fullName);   // Reads entire line with spaces!
+    // -------------------------------------------------------------------------------------
+
+    // 3. LIVE DEMONSTRATION OF cin EXTRACTION (>>) AND getline():
+    // To let this guide run automatically without pausing forever for keyboard input,
+    // we simulate the keyboard input stream using std::istringstream (which works IDENTICALLY to std::cin!):
+    std::istringstream simulatedKeyboard("25\nPrincess Peach of Mushroom Kingdom");
+
+    int extractedAge = 0;
+    std::string extractedFullName;
+
+    // Step A: Extract number using >> (Identical to std::cin >> extractedAge)
+    simulatedKeyboard >> extractedAge;
+    std::cout << "cin >> extraction: Read number -> " << extractedAge << "\n";
+
+    // Step B: Clear leftover newline (Identical to std::cin.ignore())
+    simulatedKeyboard.ignore();
+
+    // Step C: Read full line with spaces (Identical to std::getline(std::cin, extractedFullName))
+    std::getline(simulatedKeyboard, extractedFullName);
+    std::cout << "std::getline extraction: Read full sentence -> \"" << extractedFullName << "\"\n";
+}
+
+// =========================================================================================
+// SECTION 6: OPERATORS (DOING MATH, LOGIC, AND COMPARISONS)
 // =========================================================================================
 // WHAT IS IT CALLED?
 // Operators (+, -, *, /, %, ==, !=, &&, ||, !)
@@ -233,7 +310,7 @@ void demonstrateDataTypes() {
 // =========================================================================================
 
 void demonstrateOperators() {
-    std::cout << "\n--- DEMO 2: OPERATORS ---\n";
+    std::cout << "\n--- DEMO 3: OPERATORS ---\n";
 
     int a = 10;
     int b = 3;
@@ -291,25 +368,34 @@ void demonstrateOperators() {
 }
 
 // =========================================================================================
-// SECTION 6: CONTROL FLOW (MAKING DECISIONS: IF, ELSE, SWITCH)
+// SECTION 7: CONTROL FLOW (MAKING DECISIONS: IF, ELSE IF, ELSE, NESTED IF, SWITCH)
 // =========================================================================================
 // WHAT IS IT CALLED?
-// Branching Statements / Conditional Execution
+// Conditional Statements / Branching (if, else if, else, nested if, switch, case)
 //
 // WHAT DOES IT DO?
-// Lets the program choose which path to take depending on conditions.
+// Evaluates boolean expressions (true/false) to decide which path of code the computer executes:
+// - if (condition): Runs the block ONLY if the condition inside () evaluates to true.
+// - else if (condition): Tested ONLY if the previous if was false.
+// - else: Catch-all fallback. Runs if all previous conditions were false.
+// - Nested if: Placing an if-statement INSIDE another if-statement for multi-step checks.
+// - switch / case: Quickly routes execution based on a single integer or enum matching a list.
 //
 // 8-YEAR-OLD EXPLANATION:
-// A "Choose Your Own Adventure" book!
-// If you choose the treasure door, turn to page 5. Else if you choose the monster cave, turn to page 9!
+// A "Choose Your Own Adventure" storybook or a castle security guard!
+// - "IF you have the golden key, unlock the treasure chest!"
+// - "ELSE IF you have the silver key, open the secret pantry!"
+// - "ELSE, sound the castle intruder alarm!"
+// - Nested IF: "First, check IF you have a ticket. Once inside, check IF you are tall enough
+//   for the roller coaster!"
 // =========================================================================================
 
 void demonstrateControlFlow() {
-    std::cout << "\n--- DEMO 3: CONTROL FLOW (DECISIONS) ---\n";
+    std::cout << "\n--- DEMO 4: CONTROL FLOW (DECISIONS: IF, ELSE IF, ELSE) ---\n";
 
+    // 1. Basic if, else if, else
     int playerHealth = 65;
-
-    // 1. if, else if, else
+    std::cout << "Health check (health = " << playerHealth << "):\n  ";
     if (playerHealth >= 80) {
         std::cout << "Status: Full Health! Ready for battle!\n";
     } else if (playerHealth >= 40) {
@@ -318,7 +404,37 @@ void demonstrateControlFlow() {
         std::cout << "Status: Danger! Drink a potion immediately!\n";
     }
 
-    // 2. switch, case, break, default
+    // 2. Compound conditions inside 'if' (using && and ||)
+    // 8-YEAR-OLD EXPLANATION: Double security check: You need a ticket AND you must wear shoes!
+    int playerAge = 10;
+    bool hasTicket = true;
+    std::cout << "Amusement park gate: ";
+    if (playerAge >= 8 && hasTicket) {
+        std::cout << "Welcome aboard the ride!\n";
+    } else {
+        std::cout << "Sorry, you cannot enter yet.\n";
+    }
+
+    // 3. Nested if statements (an 'if' inside another 'if')
+    // 8-YEAR-OLD EXPLANATION: Opening a secret treasure chest inside a secret dungeon room!
+    bool inSecretRoom = true;
+    bool knowsSecretPassword = true;
+    std::cout << "Secret Vault: ";
+    if (inSecretRoom) {
+        if (knowsSecretPassword) {
+            std::cout << "Treasure vault opened! You found 100 gold coins!\n";
+        } else {
+            std::cout << "In the room, but the password was wrong!\n";
+        }
+    }
+
+    // 4. Modern C++ 'if with initializer' (C++17)
+    // WHAT DOES IT DO: Creates a variable directly inside the 'if' statement that disappears after!
+    if (int magicPower = 95; magicPower > 50) {
+        std::cout << "Magic Power (" << magicPower << ") is super charged!\n";
+    }
+
+    // 5. switch, case, break, default
     // WHAT IS IT CALLED: Switch statement
     // WHAT DOES IT DO: Compares one variable against a checklist of exact values (cases).
     // 'break' stops the switch so it doesn't fall through to the next case.
@@ -326,7 +442,7 @@ void demonstrateControlFlow() {
     // 8-YEAR-OLD EXPLANATION: A vending machine!
     // Press button 1 for Apple Juice, button 2 for Chocolate Milk, default gives cold water.
     int choice = 2;
-    std::cout << "Vending Machine selection: ";
+    std::cout << "Vending Machine selection (" << choice << "): ";
     switch (choice) {
         case 1:
             std::cout << "Dispensing Apple Juice!\n";
@@ -344,20 +460,32 @@ void demonstrateControlFlow() {
 }
 
 // =========================================================================================
-// SECTION 7: LOOPS (REPEATING ACTIONS AUTOMATICALLY)
+// SECTION 8: LOOPS (REPEATING ACTIONS AUTOMATICALLY: FOR, WHILE, DO-WHILE, NESTED LOOPS)
 // =========================================================================================
 // WHAT IS IT CALLED?
-// Loops (while, do-while, for, range-based for)
+// Iteration Statements / Loops (for, while, do-while, range-based for, nested loops)
 //
 // WHAT DOES IT DO?
-// Executes a block of code multiple times until a condition stops it.
+// Executes a block of code multiple times until a condition stops it:
+// - for loop: Best when you know in advance HOW MANY times to repeat (counter-based).
+// - while loop: Best when you want to repeat UNTIL a condition becomes false (condition-based).
+// - do-while loop: Guarantees the body runs AT LEAST ONCE before testing the condition.
+// - Nested loop: A loop INSIDE another loop (e.g., walking through rows and columns in a grid).
+// - Range-based for: Iterates cleanly through each item in a container or array.
+// - break: Emergency exit! Breaks out of the loop immediately.
+// - continue: Skips the rest of the current turn and jumps directly to the next turn.
 //
 // 8-YEAR-OLD EXPLANATION:
-// An automatic merry-go-round! It keeps spinning and spinning around until your ticket expires!
+// - for loop: Counting jumping jacks: 1, 2, 3, stop!
+// - while loop: "While you're hungry, keep eating apple slices!"
+// - do-while loop: "Take at least one bite of soup before deciding if it's too hot!"
+// - Nested loops: A checkerboard! You walk across Row 1 (square 1, 2, 3), then Row 2 (square 1, 2, 3)!
+// - break: Pulling the emergency brake on the merry-go-round!
+// - continue: Skipping a puddle on the sidewalk without stopping your walk!
 // =========================================================================================
 
 void demonstrateLoops() {
-    std::cout << "\n--- DEMO 4: LOOPS (REPETITION) ---\n";
+    std::cout << "\n--- DEMO 5: LOOPS (REPETITION & NESTED LOOPS) ---\n";
 
     // 1. Traditional for loop
     // Structure: for (start; condition; step)
@@ -389,7 +517,18 @@ void demonstrateLoops() {
     } while (attempts < 1);
     std::cout << "\n";
 
-    // 4. Range-Based for loop (Modern C++)
+    // 4. Nested Loops (A loop inside another loop!)
+    // 8-YEAR-OLD EXPLANATION: Drawing a 2x3 grid of toy blocks!
+    std::cout << "Nested Loops (2 rows x 3 columns grid):\n";
+    for (int row = 1; row <= 2; ++row) {
+        std::cout << "  Row " << row << ": ";
+        for (int col = 1; col <= 3; ++col) {
+            std::cout << "[R" << row << "C" << col << "] ";
+        }
+        std::cout << "\n";
+    }
+
+    // 5. Range-Based for loop (Modern C++)
     // Iterates cleanly through an entire collection of items.
     // 8-YEAR-OLD EXPLANATION: Opening a bag of colored marbles and taking out every single marble one by one!
     std::vector<std::string> toys = {"Teddy Bear", "Lego Car", "Yo-Yo"};
@@ -399,12 +538,22 @@ void demonstrateLoops() {
     }
     std::cout << "\n";
 
-    // 5. break and continue
+    // 6. Infinite Loop with break
+    // WHAT DOES IT DO: while(true) loops forever until a 'break' condition is triggered!
+    int countdown = 3;
+    std::cout << "Infinite loop with break: ";
+    while (true) {
+        std::cout << countdown << "... ";
+        countdown--;
+        if (countdown == 0) {
+            std::cout << "Blast off!\n";
+            break; // Stop the loop!
+        }
+    }
+
+    // 7. break and continue
     // 'break' exits the loop immediately.
     // 'continue' skips the rest of the current turn and jumps to the next turn.
-    // 8-YEAR-OLD EXPLANATION:
-    // 'break' is pulling the emergency brake on a train!
-    // 'continue' is skipping over a puddle on the sidewalk without stopping your walk!
     std::cout << "Break & Continue demo (skipping 2, stopping at 4): ";
     for (int number = 1; number <= 5; ++number) {
         if (number == 2) {
@@ -419,7 +568,7 @@ void demonstrateLoops() {
 }
 
 // =========================================================================================
-// SECTION 8: DATA STRUCTURES & CONTAINERS (STORING GROUPS OF THINGS)
+// SECTION 9: DATA STRUCTURES & CONTAINERS (STORING GROUPS OF THINGS)
 // =========================================================================================
 // WHAT IS IT CALLED?
 // Containers (std::vector, std::array, C-style arrays)
@@ -434,7 +583,7 @@ void demonstrateLoops() {
 // =========================================================================================
 
 void demonstrateContainers() {
-    std::cout << "\n--- DEMO 5: CONTAINERS (LISTS OF THINGS) ---\n";
+    std::cout << "\n--- DEMO 6: CONTAINERS (LISTS OF THINGS) ---\n";
 
     // 1. std::array (Fixed size container, super fast, safe)
     std::array<int, 3> fixedScores = {100, 95, 98};
@@ -459,7 +608,7 @@ void demonstrateContainers() {
 }
 
 // =========================================================================================
-// SECTION 9: FUNCTIONS (REUSABLE RECIPES OF CODE)
+// SECTION 10: FUNCTIONS (REUSABLE RECIPES OF CODE)
 // =========================================================================================
 // WHAT IS IT CALLED?
 // Functions, Parameters, Return Types, and Overloading
@@ -521,7 +670,7 @@ double multiply(double a, double b) {
 // Syntax: [captures](parameters) { body }
 // 8-YEAR-OLD EXPLANATION: A mini pocket robot you construct right now just to do one fast trick!
 void demonstrateFunctions() {
-    std::cout << "\n--- DEMO 6: FUNCTIONS & RECIPES ---\n";
+    std::cout << "\n--- DEMO 7: FUNCTIONS & RECIPES ---\n";
 
     int sum = addNumbers(5, 7);
     std::cout << "addNumbers(5, 7) = " << sum << "\n";
@@ -547,7 +696,7 @@ void demonstrateFunctions() {
 }
 
 // =========================================================================================
-// SECTION 10: REFERENCES, POINTERS & SAFE SMART POINTERS
+// SECTION 11: REFERENCES, POINTERS & SAFE SMART POINTERS
 // =========================================================================================
 // WHAT IS IT CALLED?
 // References (&), Pointers (*), nullptr, and Modern Smart Pointers (std::unique_ptr)
@@ -567,7 +716,7 @@ void demonstrateFunctions() {
 // =========================================================================================
 
 void demonstratePointersAndReferences() {
-    std::cout << "\n--- DEMO 7: REFERENCES, POINTERS & SMART POINTERS ---\n";
+    std::cout << "\n--- DEMO 8: REFERENCES, POINTERS & SMART POINTERS ---\n";
 
     int treasureCoins = 500;
 
@@ -695,7 +844,7 @@ public:
 };
 
 void demonstrateOOP() {
-    std::cout << "\n--- DEMO 8: OBJECT-ORIENTED PROGRAMMING (OOP) ---\n";
+    std::cout << "\n--- DEMO 9: OBJECT-ORIENTED PROGRAMMING (OOP) ---\n";
 
     // Struct demo:
     StudentBadge badge1{"Timmy", 3};
@@ -720,7 +869,7 @@ void demonstrateOOP() {
 }
 
 // =========================================================================================
-// SECTION 12: TEMPLATES (GENERIC PROGRAMMING / WRITE ONCE, USE FOR ANY TYPE!)
+// SECTION 13: TEMPLATES (GENERIC PROGRAMMING / WRITE ONCE, USE FOR ANY TYPE!)
 // =========================================================================================
 // WHAT IS IT CALLED?
 // Function Template (template <typename T>)
@@ -741,7 +890,7 @@ T getBiggerValue(T first, T second) {
 }
 
 void demonstrateTemplates() {
-    std::cout << "\n--- DEMO 9: TEMPLATES (COOKIE CUTTERS) ---\n";
+    std::cout << "\n--- DEMO 10: TEMPLATES (COOKIE CUTTERS) ---\n";
 
     // Works for integers:
     int bigInt = getBiggerValue(15, 42);
@@ -757,7 +906,7 @@ void demonstrateTemplates() {
 }
 
 // =========================================================================================
-// SECTION 13: ERROR HANDLING (TRY, THROW, CATCH)
+// SECTION 14: ERROR HANDLING (TRY, THROW, CATCH)
 // =========================================================================================
 // WHAT IS IT CALLED?
 // Exception Handling (try, throw, catch)
@@ -781,7 +930,7 @@ double safeDivide(double top, double bottom) {
 }
 
 void demonstrateErrorHandling() {
-    std::cout << "\n--- DEMO 10: ERROR HANDLING (SAFETY HELMETS) ---\n";
+    std::cout << "\n--- DEMO 11: ERROR HANDLING (SAFETY HELMETS) ---\n";
 
     try {
         std::cout << "Attempting 10.0 / 2.0 = " << safeDivide(10.0, 2.0) << "\n";
@@ -798,7 +947,7 @@ void demonstrateErrorHandling() {
 }
 
 // =========================================================================================
-// SECTION 14: THE MAIN FUNCTION (THE FRONT DOOR OF EVERY C++ PROGRAM)
+// SECTION 15: THE MAIN FUNCTION (THE FRONT DOOR OF EVERY C++ PROGRAM)
 // =========================================================================================
 // WHAT IS IT CALLED?
 // The Entry Point: int main()
@@ -825,31 +974,34 @@ int main() {
     // 2. Data Types
     demonstrateDataTypes();
 
-    // 3. Operators
+    // 3. Console Input & Output (cout, cin, getline)
+    demonstrateConsoleIO();
+
+    // 4. Operators
     demonstrateOperators();
 
-    // 4. Control Flow (If / Else / Switch)
+    // 5. Control Flow (If / Else / Nested If / Switch)
     demonstrateControlFlow();
 
-    // 5. Loops (For / While)
+    // 6. Loops (For / While / Do-While / Nested Loops)
     demonstrateLoops();
 
-    // 6. Containers (Arrays & Vectors)
+    // 7. Containers (Arrays & Vectors)
     demonstrateContainers();
 
-    // 7. Functions & Lambdas
+    // 8. Functions & Lambdas
     demonstrateFunctions();
 
-    // 8. Pointers, References & Smart Pointers
+    // 9. Pointers, References & Smart Pointers
     demonstratePointersAndReferences();
 
-    // 9. Object Oriented Programming (Classes & Inheritance)
+    // 10. Object Oriented Programming (Classes & Inheritance)
     demonstrateOOP();
 
-    // 10. Templates
+    // 11. Templates
     demonstrateTemplates();
 
-    // 11. Exception Handling
+    // 12. Exception Handling
     demonstrateErrorHandling();
 
     std::cout << "\n=========================================================\n";
